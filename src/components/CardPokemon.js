@@ -29,7 +29,11 @@ const CardPokemon = (props) => {
     let item = [];
     for (let index = 0; index < status.happiness; index++) {
       item.push(
-        <img src={CuteImage} style={{ width: "30px", margin: "5px" }} />
+        <img
+          src={CuteImage}
+          alt={index}
+          style={{ width: "30px", margin: "5px" }}
+        />
       );
     }
 
@@ -46,7 +50,11 @@ const CardPokemon = (props) => {
       <div className="p-grid"></div>
       <div className="p-grid">
         <div className="p-col-3">
-          <img src={props.pokemon.imageUrl} style={{ width: "100%" }} />
+          <img
+            src={props.pokemon.imageUrl}
+            style={{ width: "100%" }}
+            alt="imagePokemon"
+          />
         </div>
         <div className="p-col" style={{ marginLeft: "30px" }}>
           <div className="p-grid">

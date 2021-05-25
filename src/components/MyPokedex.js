@@ -5,7 +5,6 @@ import { InputText } from "primereact/inputtext";
 import React, { useEffect, useState } from "react";
 import CardPokemon from "./CardPokemon";
 import Header from "./core/Header";
-// import { Dialog } from 'primereact/dialog';
 
 const MyPokedex = () => {
   const url = "http://localhost:3030/api/cards";
@@ -13,34 +12,23 @@ const MyPokedex = () => {
   const [pokemons, setPokemons] = useState([]);
   const [myPokemons, setMyPokemons] = useState([]);
 
-  useEffect(() => {
-    GetPokemon();
-  }, []);
-
-  useEffect(() => {}, [pokemons]);
-
   const AddPokemon = (pokemon) => {
     setMyPokemons([...myPokemons, pokemon]);
-    const index = pokemons.findIndex((item) => item.id === pokemon.id);
     setPokemons((pokemons) =>
       pokemons.filter((item) => item.id !== pokemon.id)
     );
   };
 
   const RemovePokemon = (pokemon) => {
-    const index = myPokemons.findIndex((item) => item.id === pokemon.id);
     setMyPokemons((myPokemons) =>
       myPokemons.filter((item) => item.id !== pokemon.id)
     );
   };
-  const SearchPokemon = async (e) => {
+  const SearchPokemon = async (e = null) => {
     try {
-      console.log(e.target.value);
       const request = await axios.get(`${url}?name=${e.target.value}&limit=20`);
       const response = await request;
       if (response.status === 200) {
-        console.log(myPokemons);
-
         var filterSearch = response.data.cards.filter(
           (responseItems) =>
             !myPokemons.some(
@@ -56,11 +44,10 @@ const MyPokedex = () => {
   };
   const listPokemon =
     pokemons &&
-    pokemons.map((pokemonItem, index) => {
+    pokemons.map((pokemonItem) => {
       return (
-        <div style={{ margin: "20px" }}>
+        <div style={{ margin: "20px" }} key={pokemonItem.id}>
           <CardPokemon
-            key={pokemonItem.id}
             buttonText="Add"
             pokemon={pokemonItem}
             onClick={AddPokemon}
@@ -71,9 +58,9 @@ const MyPokedex = () => {
 
   const myPokemon =
     myPokemons &&
-    myPokemons.map((pokemonItem, index) => {
+    myPokemons.map((pokemonItem) => {
       return (
-        <div className="p-col-6">
+        <div className="p-col-6" key={pokemonItem.id}>
           <CardPokemon
             buttonText="X"
             key={pokemonItem.id}
@@ -89,7 +76,13 @@ const MyPokedex = () => {
       const request = await axios.get(`${url}`);
       const response = await request;
       if (response.status === 200) {
-        setPokemons(response.data.cards);
+        var filterSearch = response.data.cards.filter(
+          (responseItems) =>
+            !myPokemons.some(
+              (pokemonItems) => pokemonItems.id === responseItems.id
+            )
+        );
+        setPokemons(filterSearch);
       }
     } catch (error) {
       alert(error.message);
@@ -105,7 +98,10 @@ const MyPokedex = () => {
               <Button
                 label="+"
                 className="button-add"
-                onClick={() => setDisplayPokeDex(true)}
+                onClick={() => {
+                  setDisplayPokeDex(true);
+                  GetPokemon();
+                }}
               />
             </center>
           </div>
@@ -123,7 +119,6 @@ const MyPokedex = () => {
         onClose={() => setDisplayPokeDex(false)}
         aria-labelledby="simple-dialog-title"
         open={displayPokeDex}
-        max
       >
         <div className="p-grid">
           <div className="p-col">
@@ -140,27 +135,6 @@ const MyPokedex = () => {
         <br />
         {listPokemon}
       </Dialog>
-      {/* <Dialog
-        header={null}
-        visible={displayPokeDex}
-        modal={false}
-        style={{ width: "800px", height: "550px", background: "white" }}
-      >
-        <div className="p-grid">
-          <div className="p-col">
-            <span className="p-input-icon-right search-input">
-              <InputText
-                placeholder="Find Pokemon!"
-                onChange={(e) => SearchPokemon(e)}
-                className="search-input"
-              />
-            </span>
-          </div>
-        </div>
-        <br />
-        <br />
-        {listPokemon}
-      </Dialog> */}
     </>
   );
 };
