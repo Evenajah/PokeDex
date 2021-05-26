@@ -1,6 +1,8 @@
 import { ProgressBar } from "primereact/progressbar";
 import React from "react";
 import CuteImage from "../cute.png";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/opacity.css";
 
 const CardPokemon = (props) => {
   const getDamage = () => {
@@ -29,8 +31,10 @@ const CardPokemon = (props) => {
     let item = [];
     for (let index = 0; index < status.happiness; index++) {
       item.push(
-        <img
+        <LazyLoadImage
           src={CuteImage}
+          loading="lazy"
+          effect="opacity"
           alt={index}
           style={{ width: "30px", margin: "5px" }}
         />
@@ -50,8 +54,10 @@ const CardPokemon = (props) => {
       <div className="p-grid"></div>
       <div className="p-grid">
         <div className="p-col-3">
-          <img
+          <LazyLoadImage
             src={props.pokemon.imageUrl}
+            loading="lazy"
+            effect="opacity"
             style={{ width: "100%" }}
             alt="imagePokemon"
           />
