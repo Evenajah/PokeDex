@@ -1,8 +1,9 @@
 import Dialog from "@material-ui/core/Dialog";
 import axios from "axios";
+import { debounce } from "lodash";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CardPokemon from "./CardPokemon";
 import Header from "./core/Header";
 
@@ -25,22 +26,8 @@ const MyPokedex = () => {
     );
   };
   const SearchPokemon = async (e = null) => {
-    try {
-      const request = await axios.get(`${url}?name=${e.target.value}&limit=20`);
-      const response = await request;
-      if (response.status === 200) {
-        var filterSearch = response.data.cards.filter(
-          (responseItems) =>
-            !myPokemons.some(
-              (pokemonItems) => pokemonItems.id === responseItems.id
-            )
-        );
-
-        setPokemons(filterSearch);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+    console.log("dfs");
+    debounceTest(e);
   };
   const listPokemon =
     pokemons &&
@@ -88,6 +75,25 @@ const MyPokedex = () => {
       alert(error.message);
     }
   };
+
+  const debounceTest = debounce(async (e) => {
+    try {
+      const request = await axios.get(`${url}?name=${e.target.value}&limit=20`);
+      const response = await request;
+      if (response.status === 200) {
+        var filterSearch = response.data.cards.filter(
+          (responseItems) =>
+            !myPokemons.some(
+              (pokemonItems) => pokemonItems.id === responseItems.id
+            )
+        );
+
+        setPokemons(filterSearch);
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }, 400);
 
   return (
     <>
